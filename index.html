@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Quilla Hub">
+<meta name="theme-color" content="#E8540A">
+<title>Quilla Competition Hub</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192x192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --o:#E8540A;--o2:#FF7A30;--od:#A33A06;--odim:#2A1005;
+  --bg:#0D0D0D;--bg2:#161616;--bg3:#1E1E1E;--bg4:#272727;--bg5:#303030;
+  --t:#F2EDE6;--m:#9A9088;--h:#504840;
+  --bdr:#252520;--bdr2:#333028;
+  --green:#2ECC71;--red:#E74C3C;--blue:#3498DB;--gold:#F4C430;
+  --r:10px;--rl:16px;--rxl:22px;
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;background:var(--bg);color:var(--t);font-family:'Barlow',sans-serif;overflow:hidden;font-size:15px}
+.app{display:flex;flex-direction:column;height:100%;max-width:560px;margin:0 auto;position:relative}
+
+/* ── SCREENS ── */
+.screen{display:none;flex-direction:column;height:100%}
+.screen.active{display:flex}
+
+/* ── AUTH SCREEN ── */
+.auth-bg{flex:1;display:flex;flex-direction:column;overflow-y:auto;background:var(--bg);padding-bottom:calc(20px + var(--sb))}
+.auth-hero{background:linear-gradient(160deg,#1A0A02 0%,#2A1005 40%,#0D0D0D 100%);padding:calc(var(--st)+40px) 24px 32px;position:relative;overflow:hidden}
+.auth-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(232,84,10,0.25),transparent 70%)}
+.auth-hero::after{content:'';position:absolute;bottom:-20px;left:-20px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(232,84,10,0.12),transparent 70%)}
+.auth-wordmark{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:3px;color:var(--t);line-height:1;position:relative;z-index:1}
+.auth-wordmark span{color:var(--o)}
+.auth-tagline{font-size:13px;color:var(--m);margin-top:6px;position:relative;z-index:1;letter-spacing:0.5px}
+.auth-body{padding:24px}
+.auth-tabs{display:flex;background:var(--bg3);border-radius:var(--rl);padding:4px;margin-bottom:24px;border:1px solid var(--bdr)}
+.auth-tab{flex:1;padding:9px;text-align:center;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--m);transition:all .2s}
+.auth-tab.active{background:var(--o);color:#fff}
+.auth-form{display:none}.auth-form.active{display:block}
+.field{margin-bottom:14px}
+label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--m);display:block;margin-bottom:5px}
+input[type=text],input[type=email],input[type=password],select,textarea{width:100%;background:var(--bg3);border:1px solid var(--bdr2);border-radius:var(--r);color:var(--t);font-family:'Barlow',sans-serif;font-size:14px;padding:11px 14px;outline:none;transition:border-color .15s;-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--o)}
+input::placeholder{color:var(--h)}
+select option{background:var(--bg3)}
+.role-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.role-card{background:var(--bg3);border:2px solid var(--bdr2);border-radius:var(--r);padding:12px 10px;cursor:pointer;text-align:center;transition:all .2s;position:relative}
+.role-card.selected{border-color:var(--o);background:var(--odim)}
+.role-card input{display:none}
+.role-card i{font-size:22px;color:var(--m);display:block;margin-bottom:5px}
+.role-card.selected i{color:var(--o)}
+.role-card-name{font-size:12px;font-weight:700;letter-spacing:0.3px}
+.role-card-desc{font-size:10px;color:var(--m);margin-top:2px;line-height:1.3}
+.pending-badge{display:inline-block;padding:2px 8px;background:#2A1A06;color:#E89A4A;border:1px solid #5A3A10;border-radius:20px;font-size:10px;font-weight:600;margin-top:6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 18px;border-radius:var(--r);font-family:'Barlow',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;border:none}
+.btn-primary{background:var(--o);color:#fff}
+.btn-primary:active{background:var(--od);transform:scale(.97)}
+.btn-ghost{background:transparent;color:var(--m);border:1px solid var(--bdr2)}
+.btn-ghost:active{background:var(--bg3)}
+.btn-danger{background:#2A0A0A;color:#FF6B6B;border:1px solid #5A1515}
+.btn-sm{padding:6px 12px;font-size:12px;border-radius:8px}
+.btn-full{width:100%}
+.divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--h);font-size:12px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--bdr2)}
+
+/* ── MAIN APP ── */
+.header{padding:calc(var(--st)+10px) 16px 10px;background:var(--bg);border-bottom:1px solid var(--bdr);flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+.header-logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;line-height:1}
+.header-logo span{color:var(--o)}
+.header-right{display:flex;align-items:center;gap:8px}
+.avatar-sm{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;font-family:'Barlow Condensed',sans-serif;flex-shrink:0;cursor:pointer}
+.role-pip{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+.pip-admin{background:#2A1A00;color:#F4C430;border:1px solid #5A3A00}
+.pip-judge{background:#0A1A2A;color:#5EB8F5;border:1px solid #1A4A7A}
+.pip-organizer{background:#0A2A1A;color:#6FD44F;border:1px solid #1A5A2A}
+.pip-athlete{background:#1A0A2A;color:#C47EFF;border:1px solid #4A2A7A}
+.pip-fan{background:#2A2010;color:#E8C870;border:1px solid #5A4820}
+.pip-pending{background:#2A1A06;color:#E89A4A;border:1px solid #5A3A10}
+
+.nav{display:flex;background:var(--bg2);border-bottom:1px solid var(--bdr);flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav-btn{flex:1;min-width:56px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px 8px;border:none;background:transparent;color:var(--h);cursor:pointer;font-size:9px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
+.nav-btn i{font-size:20px}
+.nav-btn.active{color:var(--o);border-bottom-color:var(--o)}
+
+.content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--bdr) transparent}
+.content::-webkit-scrollbar{width:3px}
+.content::-webkit-scrollbar-thumb{background:var(--bdr)}
+.tab{display:none;padding:16px;padding-bottom:calc(16px + var(--sb))}
+.tab.active{display:block}
+
+/* ── CARDS ── */
+.card{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rl);padding:16px;margin-bottom:12px}
+.card-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:0.5px;color:var(--t);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card-title i{color:var(--o);font-size:17px}
+
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.stat-box{background:var(--bg3);border-radius:var(--r);padding:10px;text-align:center;border:1px solid var(--bdr)}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--o);line-height:1}
+.stat-lbl{font-size:10px;color:var(--m);text-transform:uppercase;letter-spacing:0.5px}
+
+/* ── BADGES ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.b-skate{background:#0D2E44;color:#5EB8F5}
+.b-bmx{background:#3D1A06;color:#FF8C42}
+.b-scooter{background:#122A0A;color:#6FD44F}
+.b-roller{background:#2A0D3D;color:#C47EFF}
+
+/* ── PILL BAR ── */
+.pill-bar{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-bottom:14px;padding-bottom:2px}
+.pill-bar::-webkit-scrollbar{display:none}
+.pill{padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid var(--bdr2);background:var(--bg3);color:var(--m);cursor:pointer;white-space:nowrap}
+.pill.p-active{background:var(--o);color:#fff;border-color:var(--o)}
+
+/* ── LIVE DASHBOARD ── */
+.live-header{background:linear-gradient(135deg,#1A0800,#2A1005);border:1px solid var(--bdr);border-radius:var(--rl);padding:16px;margin-bottom:12px;position:relative;overflow:hidden}
+.live-header::before{content:'';position:absolute;top:0;right:0;width:120px;height:120px;background:radial-gradient(circle,rgba(232,84,10,0.2),transparent 70%)}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;margin-right:6px;animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(0.8)}}
+.live-event-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;margin-top:6px}
+.live-event-meta{font-size:12px;color:var(--m);margin-top:2px}
+
+.athlete-spotlight{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rl);padding:16px;margin-bottom:12px}
+.spotlight-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.spotlight-avatar{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:22px;flex-shrink:0;border:2px solid var(--o)}
+.spotlight-name{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px}
+.spotlight-handle{font-size:12px;color:var(--m)}
+.spotlight-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.spot-stat{background:var(--bg3);border-radius:var(--r);padding:8px;text-align:center}
+.spot-stat-num{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--o)}
+.spot-stat-lbl{font-size:10px;color:var(--m);text-transform:uppercase}
+
+.trick-log{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rl);padding:16px;margin-bottom:12px}
+.trick-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bdr)}
+.trick-row:last-child{border-bottom:none}
+.trick-score{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--o);width:48px;text-align:center;flex-shrink:0}
+.trick-info{flex:1}
+.trick-name{font-size:13px;font-weight:600}
+.trick-meta{font-size:11px;color:var(--m);margin-top:2px}
+.trick-run{padding:2px 8px;background:var(--bg4);border-radius:20px;font-size:10px;font-weight:600;color:var(--m)}
+
+.run-input-wrap{background:var(--bg3);border-radius:var(--r);padding:10px 12px;margin-bottom:6px}
+.run-score-input{width:80px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:22px;padding:6px;background:var(--bg4);border:1px solid var(--bdr2);border-radius:8px;color:var(--o)}
+.trick-input{flex:1;font-size:13px}
+
+/* ── RANKINGS ── */
+.rank-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--bdr)}
+.rank-row:last-child{border-bottom:none}
+.rank-pos{font-family:'Bebas Neue',sans-serif;font-size:24px;width:32px;text-align:center;flex-shrink:0}
+.rank-gold{color:var(--gold)}
+.rank-silver{color:#B0B8C8}
+.rank-bronze{color:#CD8B5A}
+.rank-rest{color:var(--h)}
+.rank-score{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--o);white-space:nowrap}
+.prog{height:3px;background:var(--bg4);border-radius:2px;margin-top:4px}
+.prog-fill{height:100%;background:var(--o);border-radius:2px;transition:width .3s}
+
+/* ── SOCIAL FEED ── */
+.story-row{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-bottom:16px}
+.story-row::-webkit-scrollbar{display:none}
+.story-item{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;cursor:pointer}
+.story-ring{width:56px;height:56px;border-radius:50%;padding:2px;background:linear-gradient(135deg,var(--o),#FFB347);display:flex;align-items:center;justify-content:center}
+.story-ring.seen{background:var(--bg4)}
+.story-inner{width:48px;height:48px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:16px;border:2px solid var(--bg)}
+.story-label{font-size:10px;color:var(--m);max-width:56px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.add-story{width:56px;height:56px;border-radius:50%;background:var(--bg3);border:2px dashed var(--bdr2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+
+.post-card{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rl);margin-bottom:12px;overflow:hidden}
+.post-header{display:flex;align-items:center;gap:10px;padding:14px 14px 10px}
+.post-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;flex-shrink:0}
+.post-author{font-size:13px;font-weight:600}
+.post-time{font-size:11px;color:var(--m)}
+.post-body{padding:0 14px 10px;font-size:14px;line-height:1.5;color:var(--t)}
+.post-image{width:100%;height:200px;object-fit:cover;background:var(--bg3);display:flex;align-items:center;justify-content:center}
+.post-image-placeholder{width:100%;height:160px;background:linear-gradient(135deg,var(--bg3),var(--bg4));display:flex;align-items:center;justify-content:center;color:var(--h);font-size:40px}
+.post-actions{display:flex;gap:4px;padding:8px 10px;border-top:1px solid var(--bdr)}
+.post-action{display:flex;align-items:center;gap:5px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--m);background:transparent;border:none;font-family:'Barlow',sans-serif;transition:all .15s}
+.post-action:hover{background:var(--bg3);color:var(--t)}
+.post-action.liked{color:var(--red)}
+.post-tag{display:inline-block;padding:2px 8px;background:var(--odim);color:var(--o);border-radius:20px;font-size:11px;font-weight:600;margin-right:4px;cursor:pointer}
+
+.compose-box{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rl);padding:14px;margin-bottom:14px}
+.compose-row{display:flex;gap:10px;align-items:flex-start}
+.compose-input{flex:1;background:var(--bg3);border:1px solid var(--bdr2);border-radius:var(--r);padding:10px 12px;font-family:'Barlow',sans-serif;font-size:14px;color:var(--t);resize:none;min-height:44px;max-height:120px;outline:none;transition:border-color .15s}
+.compose-input:focus{border-color:var(--o)}
+
+/* ── ADMIN PANEL ── */
+.invite-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bdr)}
+.invite-row:last-child{border-bottom:none}
+.invite-info{flex:1;min-width:0}
+.invite-name{font-size:13px;font-weight:600}
+.invite-email{font-size:11px;color:var(--m)}
+.approval-btns{display:flex;gap:6px}
+
+/* ── PROFILE ── */
+.profile-hero{background:linear-gradient(160deg,#1A0A02,#0D0D0D);padding:24px 16px;text-align:center;position:relative}
+.profile-avatar{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:28px;margin:0 auto 10px;border:3px solid var(--o)}
+.profile-name{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px}
+.profile-handle{font-size:13px;color:var(--m)}
+.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-top:16px}
+.prof-stat{background:var(--bg2);padding:12px;text-align:center}
+.prof-stat-num{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--t)}
+.prof-stat-lbl{font-size:10px;color:var(--m);text-transform:uppercase}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:32px 16px;color:var(--h)}
+.empty i{font-size:40px;display:block;margin-bottom:8px;color:var(--bg4)}
+.empty p{font-size:13px}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:calc(20px + var(--sb));left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg4);color:var(--t);padding:10px 18px;border-radius:30px;font-size:13px;font-weight:500;border:1px solid var(--bdr2);opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap;z-index:9999}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── INSTALL BTN ── */
+.install-float{position:fixed;bottom:calc(16px + var(--sb));right:16px;z-index:100;display:none}
+.install-float.visible{display:block}
+.install-fab{width:48px;height:48px;background:var(--o);border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(232,84,10,.4)}
+.install-fab i{color:#fff;font-size:22px}
+
+/* ── MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:flex-end}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg2);border-radius:var(--rxl) var(--rxl) 0 0;padding:20px;padding-bottom:calc(20px + var(--sb));width:100%;max-height:85vh;overflow-y:auto;border-top:1px solid var(--bdr2)}
+.modal-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.modal-close{background:var(--bg3);border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;color:var(--m);display:flex;align-items:center;justify-content:center}
+
+/* ── LOADING ── */
+.loader{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;background:var(--bg);gap:16px}
+.loader-logo{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:4px}
+.loader-logo span{color:var(--o)}
+.loader-spin{width:36px;height:36px;border-radius:50%;border:3px solid var(--bdr2);border-top-color:var(--o);animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* PENDING STATE */
+.pending-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:32px;background:var(--bg)}
+.pending-icon{font-size:60px;color:var(--o);margin-bottom:16px}
+.pending-title{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:1px;margin-bottom:8px}
+.pending-msg{font-size:14px;color:var(--m);line-height:1.6;max-width:280px}
+
+/* ── CONFIG SCREEN ── */
+.config-screen{position:fixed;inset:0;background:var(--bg);z-index:500;display:none;overflow-y:auto;padding:calc(var(--st)+20px) 20px 40px}
+.config-screen.show{display:block}
+.config-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;margin-bottom:4px}
+.config-title span{color:var(--o)}
+.config-sub{font-size:13px;color:var(--m);margin-bottom:28px;line-height:1.5}
+.config-step{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rl);padding:16px;margin-bottom:12px}
+.config-step-num{width:24px;height:24px;background:var(--o);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;margin-right:8px;flex-shrink:0}
+.config-step-title{font-weight:600;font-size:14px;display:flex;align-items:center;margin-bottom:10px}
+.config-code{background:var(--bg3);border:1px solid var(--bdr2);border-radius:8px;padding:10px 14px;font-family:monospace;font-size:12px;color:#6FD44F;word-break:break-all;margin:8px 0}
+</style>
+</head>
+<body>
+
+<!-- FIREBASE CONFIG SCREEN (shown until configured) -->
+<div class="config-screen" id="configScreen">
+  <div class="config-title">FIREBASE<br><span>SETUP</span></div>
+  <div class="config-sub">Before launching, connect your Firebase project. This only takes 5 minutes and is completely free.</div>
+
+  <div class="config-step">
+    <div class="config-step-title"><span class="config-step-num">1</span> Create Firebase Project</div>
+    <p style="font-size:13px;color:var(--m);margin-bottom:8px">Go to <strong style="color:var(--t)">console.firebase.google.com</strong>, click "Add project", name it <strong style="color:var(--t)">quilla-hub</strong>, disable Google Analytics (optional), click Create.</p>
+  </div>
+
+  <div class="config-step">
+    <div class="config-step-title"><span class="config-step-num">2</span> Enable Authentication</div>
+    <p style="font-size:13px;color:var(--m)">In your project → Build → Authentication → Get Started → Sign-in method tab → Enable <strong style="color:var(--t)">Email/Password</strong>.</p>
+  </div>
+
+  <div class="config-step">
+    <div class="config-step-title"><span class="config-step-num">3</span> Create Firestore Database</div>
+    <p style="font-size:13px;color:var(--m);margin-bottom:8px">Build → Firestore Database → Create database → Start in <strong style="color:var(--t)">test mode</strong> → choose a region → Done.</p>
+    <p style="font-size:12px;color:var(--h)">⚠ Switch to production rules before going live (instructions in the deployment guide).</p>
+  </div>
+
+  <div class="config-step">
+    <div class="config-step-title"><span class="config-step-num">4</span> Register a Web App</div>
+    <p style="font-size:13px;color:var(--m);margin-bottom:8px">Project Overview → click the <strong style="color:var(--t)">&lt;/&gt;</strong> icon → nickname: <em>quilla-hub</em> → Register app → copy the <code style="color:#6FD44F">firebaseConfig</code> object.</p>
+  </div>
+
+  <div class="config-step">
+    <div class="config-step-title"><span class="config-step-num">5</span> Paste your config below</div>
+    <div class="field"><label>API Key</label><input type="text" id="cfg-apiKey" placeholder="AIzaSy..."></div>
+    <div class="field"><label>Auth Domain</label><input type="text" id="cfg-authDomain" placeholder="your-app.firebaseapp.com"></div>
+    <div class="field"><label>Project ID</label><input type="text" id="cfg-projectId" placeholder="quilla-hub-xxxxx"></div>
+    <div class="field"><label>Storage Bucket</label><input type="text" id="cfg-storageBucket" placeholder="your-app.appspot.com"></div>
+    <div class="field"><label>Messaging Sender ID</label><input type="text" id="cfg-messagingSenderId" placeholder="1234567890"></div>
+    <div class="field"><label>App ID</label><input type="text" id="cfg-appId" placeholder="1:123:web:abc123"></div>
+    <button class="btn btn-primary btn-full" onclick="saveFirebaseConfig()" style="margin-top:4px"><i class="ti ti-rocket"></i> Launch Quilla Hub</button>
+  </div>
+
+  <p style="font-size:12px;color:var(--h);text-align:center;margin-top:16px">Config is saved in your browser's localStorage — it stays here even after refreshing.</p>
+</div>
+
+<!-- LOADER -->
+<div class="screen active" id="loaderScreen">
+  <div class="loader">
+    <div class="loader-logo">QUILLA<span>HUB</span></div>
+    <div class="loader-spin"></div>
+  </div>
+</div>
+
+<!-- AUTH SCREEN -->
+<div class="screen" id="authScreen">
+  <div class="auth-bg">
+    <div class="auth-hero">
+      <div class="auth-wordmark">QUILLA<span>HUB</span></div>
+      <div class="auth-tagline">Extreme Sports Competition Platform</div>
+    </div>
+    <div class="auth-body">
+      <div class="auth-tabs">
+        <div class="auth-tab active" onclick="switchAuthTab('login')">Sign In</div>
+        <div class="auth-tab" onclick="switchAuthTab('signup')">Join</div>
+      </div>
+
+      <!-- LOGIN -->
+      <div class="auth-form active" id="form-login">
+        <div class="field"><label>Email</label><input type="email" id="l-email" placeholder="you@example.com" autocomplete="email"></div>
+        <div class="field"><label>Password</label><input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password"></div>
+        <button class="btn btn-primary btn-full" onclick="doLogin()" style="margin-top:4px"><i class="ti ti-login"></i> Sign In</button>
+        <div class="divider">or</div>
+        <button class="btn btn-ghost btn-full" onclick="switchAuthTab('signup')">Create account</button>
+      </div>
+
+      <!-- SIGNUP -->
+      <div class="auth-form" id="form-signup">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field"><label>First Name</label><input type="text" id="s-fname" placeholder="First" autocomplete="given-name"></div>
+          <div class="field"><label>Last Name</label><input type="text" id="s-lname" placeholder="Last" autocomplete="family-name"></div>
+        </div>
+        <div class="field"><label>Nickname / Handle</label><input type="text" id="s-handle" placeholder="@shredder"></div>
+        <div class="field"><label>Email</label><input type="email" id="s-email" placeholder="you@example.com" autocomplete="email"></div>
+        <div class="field"><label>Password</label><input type="password" id="s-pass" placeholder="Min 6 characters" autocomplete="new-password"></div>
+        <div class="field">
+          <label>I am a…</label>
+          <div class="role-cards">
+            <label class="role-card selected" id="rc-fan">
+              <input type="radio" name="role" value="fan" checked>
+              <i class="ti ti-star"></i>
+              <div class="role-card-name">Fan / Viewer</div>
+              <div class="role-card-desc">Follow athletes, react, social feed</div>
+            </label>
+            <label class="role-card" id="rc-athlete">
+              <input type="radio" name="role" value="athlete">
+              <i class="ti ti-user"></i>
+              <div class="role-card-name">Athlete</div>
+              <div class="role-card-desc">Compete, track scores, athlete profile</div>
+            </label>
+            <label class="role-card" id="rc-judge">
+              <input type="radio" name="role" value="judge">
+              <i class="ti ti-gavel"></i>
+              <div class="role-card-name">Judge</div>
+              <div class="role-card-desc">Score runs, enter tricks — needs approval</div>
+              <span class="pending-badge">Requires Approval</span>
+            </label>
+            <label class="role-card" id="rc-organizer">
+              <input type="radio" name="role" value="organizer">
+              <i class="ti ti-calendar-event"></i>
+              <div class="role-card-name">Organizer</div>
+              <div class="role-card-desc">Create events, manage athletes — needs approval</div>
+              <span class="pending-badge">Requires Approval</span>
+            </label>
+          </div>
+        </div>
+        <div class="field"><label>City / Province</label><input type="text" id="s-city" placeholder="e.g. Calamba, Laguna"></div>
+        <div class="field">
+          <label>Discipline (athletes)</label>
+          <select id="s-discipline">
+            <option value="">N/A</option>
+            <option value="skateboarding">🛹 Skateboarding</option>
+            <option value="bmx">🚲 BMX</option>
+            <option value="scooter">🛴 Scooter</option>
+            <option value="roller">🛼 Roller Skate</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="doSignup()"><i class="ti ti-user-plus"></i> Create Account</button>
+        <p style="font-size:11px;color:var(--h);text-align:center;margin-top:12px;line-height:1.5">Judges & Organizers require admin approval before gaining access. You'll see a pending screen after signup.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PENDING SCREEN -->
+<div class="screen" id="pendingScreen">
+  <div class="pending-screen">
+    <div class="pending-icon"><i class="ti ti-clock-hour-4"></i></div>
+    <div class="pending-title">Awaiting Approval</div>
+    <div class="pending-msg" id="pendingMsg">Your account is pending admin approval. You'll be notified once approved. Check back soon!</div>
+    <button class="btn btn-ghost" style="margin-top:24px" onclick="doSignOut()"><i class="ti ti-logout"></i> Sign Out</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="screen" id="mainScreen">
+  <div class="header">
+    <div class="header-logo">QUILLA<span>HUB</span></div>
+    <div class="header-right">
+      <span class="role-pip" id="rolePip"></span>
+      <div class="avatar-sm" id="userAvatar" onclick="switchTab('profile',null)" title="Profile"></div>
+    </div>
+  </div>
+  <nav class="nav" id="mainNav">
+    <button class="nav-btn active" onclick="switchTab('feed',this)"><i class="ti ti-home"></i>Feed</button>
+    <button class="nav-btn" onclick="switchTab('live',this)"><i class="ti ti-broadcast"></i>Live</button>
+    <button class="nav-btn" onclick="switchTab('rankings',this)"><i class="ti ti-podium"></i>Ranks</button>
+    <button class="nav-btn" id="navScore" onclick="switchTab('scoring',this)" style="display:none"><i class="ti ti-star"></i>Score</button>
+    <button class="nav-btn" id="navEvents" onclick="switchTab('events',this)" style="display:none"><i class="ti ti-calendar-event"></i>Events</button>
+    <button class="nav-btn" id="navAdmin" onclick="switchTab('admin',this)" style="display:none"><i class="ti ti-shield"></i>Admin</button>
+    <button class="nav-btn" onclick="switchTab('profile',this)"><i class="ti ti-user"></i>Me</button>
+  </nav>
+
+  <div class="content">
+
+    <!-- FEED TAB -->
+    <div class="tab active" id="tab-feed">
+      <div class="story-row" id="storyRow">
+        <div class="add-story" onclick="showComposeModal()" title="Add story"><i class="ti ti-plus" style="color:var(--m);font-size:20px"></i></div>
+      </div>
+      <div class="compose-box">
+        <div class="compose-row">
+          <div class="avatar-sm" id="composeAvatar" style="width:36px;height:36px;flex-shrink:0"></div>
+          <textarea class="compose-input" id="composeText" placeholder="What's happening in the skate world?" rows="1" oninput="autoResize(this)"></textarea>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <select id="postDisc" style="flex:1;min-width:120px;font-size:12px;padding:7px 10px">
+            <option value="">No tag</option>
+            <option value="skateboarding">🛹 Skateboarding</option>
+            <option value="bmx">🚲 BMX</option>
+            <option value="scooter">🛴 Scooter</option>
+            <option value="roller">🛼 Roller Skate</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="createPost()" style="flex-shrink:0"><i class="ti ti-send"></i> Post</button>
+        </div>
+      </div>
+      <div id="feedList"></div>
+    </div>
+
+    <!-- LIVE DASHBOARD TAB -->
+    <div class="tab" id="tab-live">
+      <div class="live-header">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div><span class="live-dot"></span><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--red)">Live Now</span></div>
+          <select id="liveEvtSel" onchange="loadLiveDashboard()" style="font-size:12px;padding:5px 8px;border-radius:8px;background:var(--bg3);border:1px solid var(--bdr2);color:var(--t)">
+            <option value="">Select event</option>
+          </select>
+        </div>
+        <div class="live-event-name" id="liveEvtName">—</div>
+        <div class="live-event-meta" id="liveEvtMeta">Select an active event above</div>
+      </div>
+
+      <div class="pill-bar" id="liveDiscPills"></div>
+
+      <!-- Athlete Spotlight -->
+      <div class="athlete-spotlight" id="athleteSpotlight">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--m);margin-bottom:10px"><i class="ti ti-user-star" style="color:var(--o);vertical-align:-2px;margin-right:4px"></i>NOW COMPETING</div>
+        <div class="spotlight-top">
+          <div class="spotlight-avatar" id="spAvatar"></div>
+          <div>
+            <div class="spotlight-name" id="spName">—</div>
+            <div class="spotlight-handle" id="spHandle"></div>
+            <div id="spBadge" style="margin-top:4px"></div>
+          </div>
+        </div>
+        <div class="spotlight-stats">
+          <div class="spot-stat"><div class="spot-stat-num" id="spBest">—</div><div class="spot-stat-lbl">Best Run</div></div>
+          <div class="spot-stat"><div class="spot-stat-num" id="spRuns">0</div><div class="spot-stat-lbl">Runs Done</div></div>
+          <div class="spot-stat"><div class="spot-stat-num" id="spRank">#—</div><div class="spot-stat-lbl">Current Rank</div></div>
+        </div>
+        <div id="spAthleteSelect" style="margin-top:12px">
+          <label>Switch Competing Athlete</label>
+          <select id="spSelect" onchange="setSpotlight(this.value)" style="margin-top:4px"><option value="">Pick athlete</option></select>
+        </div>
+      </div>
+
+      <!-- Trick/Run Logger -->
+      <div class="trick-log" id="trickLog">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--m);margin-bottom:12px"><i class="ti ti-clipboard-list" style="color:var(--o);vertical-align:-2px;margin-right:4px"></i>RUN & TRICK LOG</div>
+        <div id="judgeInputArea" style="display:none;margin-bottom:12px">
+          <div class="run-input-wrap">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <div>
+                <div style="font-size:10px;color:var(--m);font-weight:700;text-transform:uppercase;margin-bottom:4px">Run Score (0-100)</div>
+                <input type="number" class="run-score-input" id="judgeScore" min="0" max="100" step="0.5" placeholder="0.0">
+              </div>
+              <div style="flex:1;min-width:140px">
+                <div style="font-size:10px;color:var(--m);font-weight:700;text-transform:uppercase;margin-bottom:4px">Trick / Notes</div>
+                <input type="text" class="trick-input" id="judgeTrick" placeholder="e.g. 900, Kickflip nosegrind...">
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="logScore()" style="flex-shrink:0;align-self:flex-end"><i class="ti ti-plus"></i> Log</button>
+            </div>
+          </div>
+        </div>
+        <div id="trickHistory"></div>
+      </div>
+
+      <!-- Live Rankings Strip -->
+      <div class="card">
+        <div class="card-title"><i class="ti ti-podium"></i>Live Standings</div>
+        <div id="liveRankStrip"></div>
+      </div>
+    </div>
+
+    <!-- RANKINGS TAB -->
+    <div class="tab" id="tab-rankings">
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-num" id="rs-events">0</div><div class="stat-lbl">Events</div></div>
+        <div class="stat-box"><div class="stat-num" id="rs-athletes">0</div><div class="stat-lbl">Athletes</div></div>
+        <div class="stat-box"><div class="stat-num" id="rs-scores">0</div><div class="stat-lbl">Scores</div></div>
+      </div>
+      <div class="pill-bar">
+        <button class="pill p-active" onclick="filterRank('all',this)">Overall</button>
+        <button class="pill" onclick="filterRank('skateboarding',this)">🛹 Skate</button>
+        <button class="pill" onclick="filterRank('bmx',this)">🚲 BMX</button>
+        <button class="pill" onclick="filterRank('scooter',this)">🛴 Scooter</button>
+        <button class="pill" onclick="filterRank('roller',this)">🛼 Roller</button>
+      </div>
+      <div class="card" style="padding:0 16px">
+        <div id="rankList" style="padding:4px 0"></div>
+      </div>
+    </div>
+
+    <!-- SCORING TAB (judges/organizers) -->
+    <div class="tab" id="tab-scoring">
+      <div class="card">
+        <div class="card-title"><i class="ti ti-adjustments"></i>Score Entry</div>
+        <div class="field"><label>Event</label><select id="sc-event" onchange="renderScoreSheet()"><option value="">Select event</option></select></div>
+        <div class="field"><label>Discipline</label>
+          <select id="sc-disc" onchange="renderScoreSheet()">
+            <option value="">All</option>
+            <option value="skateboarding">🛹 Skateboarding</option>
+            <option value="bmx">🚲 BMX</option>
+            <option value="scooter">🛴 Scooter</option>
+            <option value="roller">🛼 Roller Skate</option>
+          </select>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="ti ti-clipboard-list"></i>Score Sheet</div>
+        <div id="scoreSheet"><div class="empty"><i class="ti ti-clipboard-x"></i><p>Select an event to begin.</p></div></div>
+      </div>
+    </div>
+
+    <!-- EVENTS TAB (organizers/admin) -->
+    <div class="tab" id="tab-events">
+      <div class="card">
+        <div class="card-title"><i class="ti ti-plus"></i>Create Event</div>
+        <div class="field"><label>Event Name</label><input type="text" id="en" placeholder="Quilla Open 2025"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field"><label>Date</label><input type="date" id="ed"></div>
+          <div class="field"><label>Venue</label><input type="text" id="ev" placeholder="Skatepark"></div>
+        </div>
+        <div class="field"><label>Disciplines</label>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+            <label style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;background:var(--bg3);border:1px solid var(--bdr2);border-radius:20px;padding:6px 10px;cursor:pointer"><input type="checkbox" value="skateboarding" class="dchk"> 🛹 Skate</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;background:var(--bg3);border:1px solid var(--bdr2);border-radius:20px;padding:6px 10px;cursor:pointer"><input type="checkbox" value="bmx" class="dchk"> 🚲 BMX</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;background:var(--bg3);border:1px solid var(--bdr2);border-radius:20px;padding:6px 10px;cursor:pointer"><input type="checkbox" value="scooter" class="dchk"> 🛴 Scooter</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;background:var(--bg3);border:1px solid var(--bdr2);border-radius:20px;padding:6px 10px;cursor:pointer"><input type="checkbox" value="roller" class="dchk"> 🛼 Roller</label>
+          </div>
+        </div>
+        <div class="field"><label>Runs per Athlete</label>
+          <div style="display:flex;gap:6px;margin-top:6px">
+            <label style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;background:var(--bg3);border:1px solid var(--bdr2);border-radius:20px;padding:6px 12px;cursor:pointer"><input type="radio" name="runs" value="2"> 2 runs</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;background:var(--bg3);border:1px solid var(--bdr2);border-radius:20px;padding:6px 12px;cursor:pointer"><input type="radio" name="runs" value="3" checked> 3 runs</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;background:var(--bg3);border:1px solid var(--bdr2);border-radius:20px;padding:6px 12px;cursor:pointer"><input type="radio" name="runs" value="4"> Jam</label>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="createEvent()"><i class="ti ti-calendar-plus"></i> Create Event</button>
+      </div>
+      <div id="eventsList"></div>
+    </div>
+
+    <!-- ADMIN TAB -->
+    <div class="tab" id="tab-admin">
+      <div class="card">
+        <div class="card-title"><i class="ti ti-shield"></i>Admin Panel</div>
+        <p style="font-size:13px;color:var(--m);margin-bottom:14px">Approve or reject pending judge and organizer requests. Approved users get immediate access.</p>
+        <div id="pendingList"><div class="empty"><i class="ti ti-check"></i><p>No pending approvals.</p></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="ti ti-users"></i>All Users</div>
+        <div id="allUsersList"><div class="empty"><i class="ti ti-loader"></i><p>Loading...</p></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="ti ti-send"></i>Invite by Email</div>
+        <div class="field"><label>Email</label><input type="email" id="inv-email" placeholder="judge@example.com"></div>
+        <div class="field"><label>Role to grant</label>
+          <select id="inv-role">
+            <option value="judge">Judge</option>
+            <option value="organizer">Organizer</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="sendInvite()"><i class="ti ti-mail"></i> Create Invite Link</button>
+        <div id="inviteResult" style="margin-top:10px"></div>
+      </div>
+    </div>
+
+    <!-- PROFILE TAB -->
+    <div class="tab" id="tab-profile">
+      <div class="profile-hero">
+        <div class="profile-avatar" id="profAvatar"></div>
+        <div class="profile-name" id="profName"></div>
+        <div class="profile-handle" id="profHandle"></div>
+        <div style="margin-top:6px" id="profRolePip"></div>
+        <div style="font-size:12px;color:var(--m);margin-top:4px" id="profCity"></div>
+        <div class="profile-stats">
+          <div class="prof-stat"><div class="prof-stat-num" id="pf-posts">0</div><div class="prof-stat-lbl">Posts</div></div>
+          <div class="prof-stat"><div class="prof-stat-num" id="pf-events">0</div><div class="prof-stat-lbl">Events</div></div>
+          <div class="prof-stat"><div class="prof-stat-num" id="pf-best">—</div><div class="prof-stat-lbl">Best Score</div></div>
+        </div>
+      </div>
+      <div style="padding:16px">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-settings"></i>Account</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button class="btn btn-ghost btn-full" onclick="showInstallSheet()"><i class="ti ti-download"></i> Install App on Home Screen</button>
+            <button class="btn btn-danger btn-full" onclick="doSignOut()"><i class="ti ti-logout"></i> Sign Out</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /mainScreen -->
+
+<!-- INSTALL MODAL -->
+<div class="modal-bg" id="installModal" onclick="closeModal('installModal',event)">
+  <div class="modal">
+    <div class="modal-title">Install Quilla Hub <button class="modal-close" onclick="closeModal('installModal')"><i class="ti ti-x" style="font-size:14px"></i></button></div>
+    <p style="font-size:13px;color:var(--m);margin-bottom:16px;line-height:1.5">Add to your home screen for the full app experience — works offline, no App Store needed.</p>
+    <div id="mi-android" style="display:none">
+      <button class="btn btn-primary btn-full" id="miAndroidBtn" onclick="doInstall()" style="margin-bottom:8px"><i class="ti ti-download"></i> Add to Home Screen</button>
+    </div>
+    <div id="mi-ios" style="display:none">
+      <div style="background:var(--bg3);border-radius:var(--r);padding:14px;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13px"><i class="ti ti-upload" style="color:var(--o);font-size:18px;flex-shrink:0"></i><span>Tap the <strong>Share</strong> button in Safari's toolbar</span></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13px"><i class="ti ti-square-plus" style="color:var(--o);font-size:18px;flex-shrink:0"></i><span>Tap <strong>"Add to Home Screen"</strong></span></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13px"><i class="ti ti-check" style="color:var(--o);font-size:18px;flex-shrink:0"></i><span>Tap <strong>Add</strong></span></div>
+      </div>
+    </div>
+    <button class="btn btn-ghost btn-full" onclick="closeModal('installModal')">Maybe later</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- FIREBASE SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, setDoc, getDoc, getDocs, collection, addDoc, updateDoc, deleteDoc, query, orderBy, onSnapshot, serverTimestamp, where } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+// ── GLOBALS ──
+window._fb = {}; // will hold auth, db
+window._user = null;
+window._profile = null;
+window._events = [];
+window._athletes = [];
+window._scores = {};
+window._posts = [];
+window._pendingApprovals = [];
+window._rankFilter = 'all';
+window._currentSpotlight = null;
+window._trickLog = [];
+window._liveDisc = '';
+window._deferredPrompt = null;
+window._unsubFeed = null;
+
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+const DL = {skateboarding:'Skateboarding',bmx:'BMX',scooter:'Scooter',roller:'Roller Skate'};
+const COL = {
+  skateboarding:{bg:'#0D2E44',fg:'#5EB8F5',badge:'b-skate'},
+  bmx:{bg:'#3D1A06',fg:'#FF8C42',badge:'b-bmx'},
+  scooter:{bg:'#122A0A',fg:'#6FD44F',badge:'b-scooter'},
+  roller:{bg:'#2A0D3D',fg:'#C47EFF',badge:'b-roller'}
+};
+const ROLE_COLORS = {
+  admin:'pip-admin',judge:'pip-judge',organizer:'pip-organizer',
+  athlete:'pip-athlete',fan:'pip-fan',pending_judge:'pip-pending',pending_organizer:'pip-pending'
+};
+
+// ── TOAST ──
+let toastT;
+window.toast = function(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2800);
+};
+
+// ── SCREENS ──
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ── FIREBASE CONFIG ──
+function getStoredConfig(){
+  try{return JSON.parse(localStorage.getItem('qh_cfg')||'null')}catch{return null}
+}
+window.saveFirebaseConfig = function(){
+  const cfg = {
+    apiKey: document.getElementById('cfg-apiKey').value.trim(),
+    authDomain: document.getElementById('cfg-authDomain').value.trim(),
+    projectId: document.getElementById('cfg-projectId').value.trim(),
+    storageBucket: document.getElementById('cfg-storageBucket').value.trim(),
+    messagingSenderId: document.getElementById('cfg-messagingSenderId').value.trim(),
+    appId: document.getElementById('cfg-appId').value.trim()
+  };
+  if(!cfg.apiKey||!cfg.projectId){toast('Fill in at least API Key and Project ID');return;}
+  localStorage.setItem('qh_cfg', JSON.stringify(cfg));
+  document.getElementById('configScreen').classList.remove('show');
+  initFirebase(cfg);
+};
+
+function initFirebase(cfg){
+  const app = initializeApp(cfg);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  window._fb = {auth, db};
+  setupAuthListener(auth, db);
+}
+
+// ── AUTH LISTENER ──
+function setupAuthListener(auth, db){
+  onAuthStateChanged(auth, async user => {
+    if(!user){showScreen('authScreen'); return;}
+    // load profile
+    const snap = await getDoc(doc(db,'users',user.uid));
+    if(!snap.exists()){showScreen('authScreen');return;}
+    window._user = user;
+    window._profile = snap.data();
+    const role = window._profile.role;
+    if(role==='pending_judge'||role==='pending_organizer'){
+      document.getElementById('pendingMsg').textContent =
+        `Your ${role==='pending_judge'?'judge':'organizer'} account is awaiting admin approval. We'll notify you once approved!`;
+      showScreen('pendingScreen');return;
+    }
+    setupMainApp();
+  });
+}
+
+// ── MAIN APP ──
+function setupMainApp(){
+  const role = window._profile.role;
+  const p = window._profile;
+  // Header
+  const initials = ((p.firstName||'?')[0]+(p.lastName||'?')[0]).toUpperCase();
+  const col = COL[p.discipline]||{bg:'#3A3028',fg:'#E8C870'};
+  const av = document.getElementById('userAvatar');
+  av.style.background=col.bg; av.style.color=col.fg; av.textContent=initials;
+  document.getElementById('rolePip').textContent=role.replace('_',' ');
+  document.getElementById('rolePip').className='role-pip '+(ROLE_COLORS[role]||'pip-fan');
+  // compose avatar
+  const ca = document.getElementById('composeAvatar');
+  ca.style.background=col.bg; ca.style.color=col.fg; ca.textContent=initials; ca.style.borderRadius='50%';
+  // Nav visibility
+  if(role==='judge'||role==='organizer'||role==='admin'){document.getElementById('navScore').style.display='';}
+  if(role==='organizer'||role==='admin'){document.getElementById('navEvents').style.display='';}
+  if(role==='admin'){document.getElementById('navAdmin').style.display='';}
+  // Profile tab
+  document.getElementById('profName').textContent=(p.firstName+' '+p.lastName).trim()||'Unknown';
+  document.getElementById('profHandle').textContent=p.handle||'';
+  document.getElementById('profCity').textContent=p.city||'';
+  document.getElementById('profRolePip').innerHTML=`<span class="role-pip ${ROLE_COLORS[role]||'pip-fan'}">${role}</span>`;
+  const pa=document.getElementById('profAvatar');
+  pa.style.background=col.bg;pa.style.color=col.fg;pa.textContent=initials;
+  showScreen('mainScreen');
+  loadData();
+}
+
+// ── DATA LOADING ──
+async function loadData(){
+  const {db}=window._fb;
+  // events
+  const evSnap = await getDocs(collection(db,'events'));
+  window._events = evSnap.docs.map(d=>({id:d.id,...d.data()}));
+  // athletes (users with role=athlete)
+  const athSnap = await getDocs(query(collection(db,'users'),where('role','==','athlete')));
+  window._athletes = athSnap.docs.map(d=>({id:d.id,...d.data()}));
+  // scores
+  const scSnap = await getDocs(collection(db,'scores'));
+  window._scores = {};
+  scSnap.docs.forEach(d=>{window._scores[d.id]=d.data();});
+  // live feed
+  subscribeFeed();
+  // admin
+  if(window._profile.role==='admin') loadAdminData();
+  // sync UI
+  syncEventSelects();
+  renderFeed();
+  renderRankings();
+  renderEvents();
+  renderScoreSheet();
+  renderLiveDashboard();
+  updateRankStats();
+}
+
+// ── FEED ──
+function subscribeFeed(){
+  const {db}=window._fb;
+  if(window._unsubFeed) window._unsubFeed();
+  const q = query(collection(db,'posts'), orderBy('createdAt','desc'));
+  window._unsubFeed = onSnapshot(q, snap => {
+    window._posts = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderFeed();
+    renderStories();
+  });
+}
+
+function renderStories(){
+  const row = document.getElementById('storyRow');
+  const stories = window._posts.filter(p=>p.isStory).slice(0,10);
+  const addBtn = `<div class="add-story" onclick="showComposeModal()" title="Add story"><i class="ti ti-plus" style="color:var(--m);font-size:20px"></i></div>`;
+  const items = stories.map(p=>{
+    const col=COL[p.discipline]||{bg:'#3A3028',fg:'#E8C870'};
+    const init=(p.authorName||'?').split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+    return `<div class="story-item">
+      <div class="story-ring"><div class="story-inner" style="background:${col.bg};color:${col.fg}">${init}</div></div>
+      <div class="story-label">${p.authorName?.split(' ')[0]||'?'}</div>
+    </div>`;
+  }).join('');
+  row.innerHTML = addBtn + items;
+}
+
+function renderFeed(){
+  const el=document.getElementById('feedList');
+  if(!window._posts.length){el.innerHTML='<div class="empty"><i class="ti ti-news-off"></i><p>No posts yet. Be the first to share!</p></div>';return;}
+  el.innerHTML = window._posts.filter(p=>!p.isStory).map(p=>{
+    const col=COL[p.discipline]||{bg:'#3A3028',fg:'#E8C870'};
+    const init=(p.authorName||'?').split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+    const likes=p.likes||0;
+    const ts = p.createdAt?.toDate ? timeAgo(p.createdAt.toDate()) : 'just now';
+    const discTag = p.discipline?`<span class="post-tag">#${DL[p.discipline]||p.discipline}</span>`:'';
+    const isOwn = p.authorId === window._user?.uid;
+    return `<div class="post-card">
+      <div class="post-header">
+        <div class="post-avatar" style="background:${col.bg};color:${col.fg}">${init}</div>
+        <div style="flex:1">
+          <div class="post-author">${p.authorName||'Anonymous'}</div>
+          <div class="post-time">${ts}${p.roleLabel?' · '+p.roleLabel:''}</div>
+        </div>
+        ${isOwn?`<button class="btn btn-danger btn-sm" onclick="deletePost('${p.id}')"><i class="ti ti-trash"></i></button>`:''}
+      </div>
+      <div class="post-body">${discTag}${escHtml(p.body)}</div>
+      ${p.imageUrl?`<div class="post-image-placeholder"><i class="ti ti-photo" style="font-size:32px"></i></div>`:''}
+      <div class="post-actions">
+        <button class="post-action" onclick="toggleLike('${p.id}',${likes})"><i class="ti ti-heart${p.likedBy?.includes(window._user?.uid)?'-filled':''}" style="${p.likedBy?.includes(window._user?.uid)?'color:#E74C3C':''}"></i> ${likes}</button>
+        <button class="post-action"><i class="ti ti-message-circle"></i> Comment</button>
+        <button class="post-action" style="margin-left:auto" onclick="sharePost('${p.id}')"><i class="ti ti-share"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.createPost = async function(){
+  const body = document.getElementById('composeText').value.trim();
+  if(!body){toast('Write something first');return;}
+  const {db}=window._fb;
+  const p=window._profile;
+  await addDoc(collection(db,'posts'),{
+    body, discipline: document.getElementById('postDisc').value||null,
+    authorId: window._user.uid,
+    authorName: (p.firstName+' '+p.lastName).trim(),
+    roleLabel: p.role,
+    likes:0, likedBy:[],
+    isStory:false,
+    createdAt: serverTimestamp()
+  });
+  document.getElementById('composeText').value='';
+  document.getElementById('postDisc').value='';
+  toast('Posted! 🤙');
+};
+
+window.toggleLike = async function(postId, currentLikes){
+  const {db}=window._fb;
+  const uid=window._user.uid;
+  const post=window._posts.find(p=>p.id===postId);
+  if(!post)return;
+  const liked=post.likedBy?.includes(uid);
+  await updateDoc(doc(db,'posts',postId),{
+    likes: liked?currentLikes-1:currentLikes+1,
+    likedBy: liked ? (post.likedBy||[]).filter(id=>id!==uid) : [...(post.likedBy||[]),uid]
+  });
+};
+
+window.deletePost = async function(postId){
+  const {db}=window._fb;
+  await deleteDoc(doc(db,'posts',postId));
+  toast('Post deleted');
+};
+
+window.sharePost = function(postId){
+  if(navigator.share){navigator.share({title:'Quilla Hub',url:location.href+'#post-'+postId}).catch(()=>{});}
+  else{navigator.clipboard?.writeText(location.href).then(()=>toast('Link copied!'));}
+};
+
+// ── EVENTS ──
+window.createEvent = async function(){
+  const {db}=window._fb;
+  const name=document.getElementById('en').value.trim();
+  const date=document.getElementById('ed').value;
+  const venue=document.getElementById('ev').value.trim();
+  const discs=[...document.querySelectorAll('.dchk:checked')].map(c=>c.value);
+  const runs=parseInt(document.querySelector('input[name="runs"]:checked')?.value||3);
+  if(!name){toast('Enter event name');return;}
+  if(!discs.length){toast('Select discipline(s)');return;}
+  await addDoc(collection(db,'events'),{name,date,venue,disciplines:discs,runs,createdBy:window._user.uid,createdAt:serverTimestamp()});
+  document.getElementById('en').value=''; document.getElementById('ed').value=''; document.getElementById('ev').value='';
+  document.querySelectorAll('.dchk').forEach(c=>c.checked=false);
+  const snap=await getDocs(collection(db,'events'));
+  window._events=snap.docs.map(d=>({id:d.id,...d.data()}));
+  syncEventSelects(); renderEvents(); toast('Event created!');
+};
+
+function renderEvents(){
+  const el=document.getElementById('eventsList');
+  if(!window._events.length){el.innerHTML='<div class="empty"><i class="ti ti-calendar-off"></i><p>No events yet.</p></div>';return;}
+  el.innerHTML=window._events.map(e=>{
+    const badges=(e.disciplines||[]).map(d=>`<span class="badge ${COL[d]?.badge||''}">${DL[d]}</span>`).join(' ');
+    return `<div class="card" style="margin-bottom:10px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+        <div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;margin-bottom:3px">${e.name}</div>
+          <div style="font-size:12px;color:var(--m);margin-bottom:8px">${e.date||'TBD'}${e.venue?' · '+e.venue:''} · ${e.runs} runs</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap">${badges}</div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.id}')"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.deleteEvent = async function(id){
+  if(!confirm('Delete this event?'))return;
+  const {db}=window._fb;
+  await deleteDoc(doc(db,'events',id));
+  window._events=window._events.filter(e=>e.id!==id);
+  syncEventSelects();renderEvents();toast('Event deleted');
+};
+
+function syncEventSelects(){
+  ['sc-event','liveEvtSel'].forEach(sid=>{
+    const sel=document.getElementById(sid);if(!sel)return;
+    const cur=sel.value;
+    const opts='<option value="">Select event</option>'+window._events.map(e=>`<option value="${e.id}"${cur===e.id?' selected':''}>${e.name}</option>`).join('');
+    sel.innerHTML=opts;
+  });
+  // score event select
+  const sce=document.getElementById('sc-event');
+  if(sce){sce.innerHTML='<option value="">Select event</option>'+window._events.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');}
+}
+
+// ── SCORING ──
+window.renderScoreSheet = async function(){
+  const el=document.getElementById('scoreSheet');
+  const evtId=document.getElementById('sc-event')?.value;
+  const disc=document.getElementById('sc-disc')?.value;
+  let list=window._athletes.filter(a=>a.eventId===evtId||!evtId);
+  if(disc)list=list.filter(a=>a.discipline===disc);
+  if(!list.length){el.innerHTML='<div class="empty"><i class="ti ti-clipboard-x"></i><p>No athletes match. Register athletes first.</p></div>';return;}
+  const evt=window._events.find(e=>e.id===evtId);
+  const runs=evt?evt.runs:3;
+  el.innerHTML=list.map(a=>{
+    const c=COL[a.discipline]||{};
+    const init=((a.firstName||'?')[0]+(a.lastName||'?')[0]).toUpperCase();
+    const sc=window._scores[a.id]||{runs:Array(runs).fill('')};
+    const vals=(sc.runs||[]).filter(s=>s!=='').map(Number);
+    const best=vals.length?Math.max(...vals):null;
+    const runInputs=Array.from({length:runs},(_,i)=>`
+      <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+        <div style="font-size:10px;color:var(--h);font-weight:700;text-transform:uppercase">R${i+1}</div>
+        <input type="number" min="0" max="100" step="0.5" placeholder="—" value="${(sc.runs||[])[i]||''}"
+          style="width:60px;text-align:center;padding:7px 4px;font-size:14px;font-family:'Bebas Neue',sans-serif;background:var(--bg3);border:1px solid var(--bdr2);border-radius:8px;color:var(--o)"
+          onchange="saveScore('${a.id}',${i},${runs},this.value)">
+      </div>`).join('');
+    return `<div style="padding:12px 0;border-bottom:1px solid var(--bdr)">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <div style="width:30px;height:30px;border-radius:50%;background:${c.bg||'#333'};color:${c.fg||'#fff'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">${init}</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600">${a.firstName} ${a.lastName}</div><span class="badge ${c.badge||''}" style="font-size:10px">${DL[a.discipline]||''}</span></div>
+        <div style="text-align:right"><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--o)">${best!==null?best.toFixed(1):'—'}</div><div style="font-size:10px;color:var(--h)">best</div></div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">${runInputs}</div>
+      <div class="prog" style="margin-top:8px"><div class="prog-fill" style="width:${best!==null?Math.round(best):0}%"></div></div>
+    </div>`;
+  }).join('');
+};
+
+window.saveScore = async function(athId, idx, runs, val){
+  const {db}=window._fb;
+  const existing=window._scores[athId]||{runs:Array(runs).fill('')};
+  const runsArr=[...(existing.runs||Array(runs).fill(''))];
+  while(runsArr.length<runs)runsArr.push('');
+  const v=parseFloat(val);
+  runsArr[idx]=(isNaN(v)||v<0||v>100)?'':Math.min(100,Math.max(0,v)).toFixed(1);
+  window._scores[athId]={...existing,runs:runsArr,athleteId:athId};
+  await setDoc(doc(db,'scores',athId),window._scores[athId]);
+  renderRankings();updateRankStats();renderLiveDashboard();
+};
+
+// ── RANKINGS ──
+window.filterRank = function(f,btn){
+  window._rankFilter=f;
+  document.querySelectorAll('.pill-bar .pill').forEach(b=>{b.classList.remove('p-active');});
+  btn.classList.add('p-active');
+  renderRankings();
+};
+
+function renderRankings(){
+  const el=document.getElementById('rankList');
+  let list=window._rankFilter==='all'?window._athletes:window._athletes.filter(a=>a.discipline===window._rankFilter);
+  list=list.map(a=>{
+    const sc=window._scores[a.id];
+    const vals=sc?(sc.runs||[]).filter(s=>s!=='').map(Number):[];
+    return{...a,best:vals.length?Math.max(...vals):null,runs:vals.length};
+  }).filter(a=>a.best!==null).sort((a,b)=>b.best-a.best);
+  if(!list.length){el.innerHTML='<div class="empty"><i class="ti ti-podium-off"></i><p>No scores yet.</p></div>';return;}
+  el.innerHTML=list.map((a,i)=>{
+    const c=COL[a.discipline]||{};
+    const init=((a.firstName||'?')[0]+(a.lastName||'?')[0]).toUpperCase();
+    const evt=window._events.find(e=>e.id===a.eventId);
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':null;
+    const rc=i===0?'rank-gold':i===1?'rank-silver':i===2?'rank-bronze':'rank-rest';
+    return `<div class="rank-row">
+      <div class="rank-pos ${rc}">${medal||i+1}</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:${c.bg||'#333'};color:${c.fg||'#fff'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">${init}</div>
+      <div class="rank-info">
+        <div style="font-size:13px;font-weight:600">${a.firstName} ${a.lastName}${a.handle?` <span style="font-size:11px;color:var(--h)">${a.handle}</span>`:''}</div>
+        <div style="font-size:11px;color:var(--m);margin-top:1px"><span class="badge ${c.badge||''}" style="font-size:10px">${DL[a.discipline]||''}</span>${evt?' · '+evt.name:''}</div>
+        <div class="prog" style="margin-top:4px"><div class="prog-fill" style="width:${Math.round(a.best)}%"></div></div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div class="rank-score">${a.best.toFixed(1)}</div>
+        <div style="font-size:10px;color:var(--h)">${a.runs} run${a.runs!==1?'s':''}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateRankStats(){
+  document.getElementById('rs-events').textContent=window._events.length;
+  document.getElementById('rs-athletes').textContent=window._athletes.length;
+  document.getElementById('rs-scores').textContent=Object.values(window._scores).reduce((s,r)=>s+(r.runs||[]).filter(x=>x!=='').length,0);
+  // profile stats
+  if(window._profile){
+    document.getElementById('pf-events').textContent=window._events.length;
+    document.getElementById('pf-posts').textContent=window._posts.filter(p=>p.authorId===window._user?.uid).length;
+    if(window._profile.role==='athlete'){
+      const uid=window._user?.uid;
+      const sc=window._scores[uid];
+      const vals=sc?(sc.runs||[]).filter(s=>s!=='').map(Number):[];
+      document.getElementById('pf-best').textContent=vals.length?Math.max(...vals).toFixed(1):'—';
+    }
+  }
+}
+
+// ── LIVE DASHBOARD ──
+window.loadLiveDashboard = function(){renderLiveDashboard();}
+
+function renderLiveDashboard(){
+  const evtId=document.getElementById('liveEvtSel')?.value;
+  const evt=window._events.find(e=>e.id===evtId);
+  document.getElementById('liveEvtName').textContent=evt?evt.name:'— Select an Event —';
+  document.getElementById('liveEvtMeta').textContent=evt?(evt.date?evt.date:'')+(evt.venue?' · '+evt.venue:''):'';
+
+  // discipline pills
+  const pillBar=document.getElementById('liveDiscPills');
+  if(evt&&evt.disciplines?.length>1){
+    pillBar.innerHTML=evt.disciplines.map((d,i)=>`<button class="pill${i===0?' p-active':''}" onclick="setLiveDisc('${d}',this)">${DL[d]}</button>`).join('');
+    if(!window._liveDisc)window._liveDisc=evt.disciplines[0];
+  } else {
+    pillBar.innerHTML='';
+    window._liveDisc=evt?.disciplines?.[0]||'';
+  }
+
+  // athletes for this event + disc
+  let athList=window._athletes;
+  if(evtId)athList=athList.filter(a=>a.eventId===evtId);
+  if(window._liveDisc)athList=athList.filter(a=>a.discipline===window._liveDisc);
+
+  // spotlight select
+  const spSel=document.getElementById('spSelect');
+  spSel.innerHTML='<option value="">Pick athlete</option>'+athList.map(a=>`<option value="${a.id}">${a.firstName} ${a.lastName}</option>`).join('');
+
+  // auto-spotlight first
+  if(athList.length&&!window._currentSpotlight) setSpotlightById(athList[0].id);
+  else if(window._currentSpotlight) renderSpotlight();
+
+  // judge input area
+  const role=window._profile?.role;
+  document.getElementById('judgeInputArea').style.display=(role==='judge'||role==='organizer'||role==='admin')&&evtId?'block':'none';
+
+  // trick history
+  renderTrickHistory();
+  renderLiveRankings(athList);
+}
+
+window.setLiveDisc = function(disc,btn){
+  window._liveDisc=disc;
+  document.querySelectorAll('#liveDiscPills .pill').forEach(b=>b.classList.remove('p-active'));
+  btn.classList.add('p-active');
+  renderLiveDashboard();
+};
+
+window.setSpotlight = function(id){setSpotlightById(id);}
+function setSpotlightById(id){
+  const ath=window._athletes.find(a=>a.id===id);
+  if(!ath)return;
+  window._currentSpotlight=ath;
+  document.getElementById('spSelect').value=id;
+  renderSpotlight();
+}
+
+function renderSpotlight(){
+  const a=window._currentSpotlight;
+  if(!a){document.getElementById('spName').textContent='—';return;}
+  const c=COL[a.discipline]||{bg:'#333',fg:'#fff'};
+  const init=((a.firstName||'?')[0]+(a.lastName||'?')[0]).toUpperCase();
+  const av=document.getElementById('spAvatar');
+  av.style.background=c.bg; av.style.color=c.fg; av.textContent=init;
+  document.getElementById('spName').textContent=(a.firstName+' '+a.lastName).trim();
+  document.getElementById('spHandle').textContent=a.handle||'';
+  document.getElementById('spBadge').innerHTML=`<span class="badge ${c.badge||''}">${DL[a.discipline]||''}</span>`;
+  const sc=window._scores[a.id];
+  const vals=sc?(sc.runs||[]).filter(s=>s!=='').map(Number):[];
+  const best=vals.length?Math.max(...vals):null;
+  document.getElementById('spBest').textContent=best!==null?best.toFixed(1):'—';
+  document.getElementById('spRuns').textContent=vals.length;
+  // rank
+  const all=window._athletes.map(x=>{
+    const s=window._scores[x.id];
+    const v=s?(s.runs||[]).filter(r=>r!=='').map(Number):[];
+    return{id:x.id,best:v.length?Math.max(...v):null};
+  }).filter(x=>x.best!==null).sort((a,b)=>b.best-a.best);
+  const rankPos=all.findIndex(x=>x.id===a.id);
+  document.getElementById('spRank').textContent=rankPos>=0?'#'+(rankPos+1):'#—';
+}
+
+window.logScore = async function(){
+  const scoreVal=document.getElementById('judgeScore').value;
+  const trick=document.getElementById('judgeTrick').value.trim();
+  const sp=window._currentSpotlight;
+  const evtId=document.getElementById('liveEvtSel')?.value;
+  if(!sp){toast('Select an athlete first');return;}
+  if(!scoreVal){toast('Enter a score');return;}
+  const v=parseFloat(scoreVal);
+  if(isNaN(v)||v<0||v>100){toast('Score must be 0–100');return;}
+  const evt=window._events.find(e=>e.id===evtId);
+  const runs=evt?evt.runs:3;
+  const existing=window._scores[sp.id]||{runs:Array(runs).fill('')};
+  const runsArr=[...(existing.runs||Array(runs).fill(''))];
+  while(runsArr.length<runs)runsArr.push('');
+  const nextSlot=runsArr.findIndex(r=>r==='');
+  if(nextSlot===-1){toast('All runs scored for this athlete');return;}
+  runsArr[nextSlot]=v.toFixed(1);
+  window._scores[sp.id]={...existing,runs:runsArr,athleteId:sp.id};
+  const {db}=window._fb;
+  await setDoc(doc(db,'scores',sp.id),window._scores[sp.id]);
+  // log trick
+  window._trickLog.unshift({athlete:sp.firstName+' '+sp.lastName,score:v,trick:trick||'—',run:nextSlot+1,time:new Date().toLocaleTimeString()});
+  document.getElementById('judgeScore').value='';
+  document.getElementById('judgeTrick').value='';
+  renderSpotlight();renderTrickHistory();renderLiveRankings(window._athletes);renderRankings();updateRankStats();
+  toast(`Run ${nextSlot+1}: ${v.toFixed(1)} logged ✓`);
+};
+
+function renderTrickHistory(){
+  const el=document.getElementById('trickHistory');
+  if(!window._trickLog.length){el.innerHTML='<div class="empty" style="padding:16px"><i class="ti ti-list-details"></i><p>Trick log is empty.</p></div>';return;}
+  el.innerHTML=window._trickLog.slice(0,10).map(t=>`
+    <div class="trick-row">
+      <div class="trick-score">${t.score.toFixed(1)}</div>
+      <div class="trick-info">
+        <div class="trick-name">${t.athlete}</div>
+        <div class="trick-meta">${t.trick!=='—'?t.trick:''} <span style="color:var(--h)">${t.time}</span></div>
+      </div>
+      <span class="trick-run">Run ${t.run}</span>
+    </div>`).join('');
+}
+
+function renderLiveRankings(athList){
+  const el=document.getElementById('liveRankStrip');
+  let list=athList.map(a=>{
+    const sc=window._scores[a.id];
+    const vals=sc?(sc.runs||[]).filter(s=>s!=='').map(Number):[];
+    return{...a,best:vals.length?Math.max(...vals):null};
+  }).filter(a=>a.best!==null).sort((a,b)=>b.best-a.best);
+  if(!list.length){el.innerHTML='<div class="empty"><i class="ti ti-podium-off"></i><p>No scores yet for this event.</p></div>';return;}
+  el.innerHTML=list.slice(0,6).map((a,i)=>{
+    const c=COL[a.discipline]||{bg:'#333',fg:'#fff'};
+    const init=((a.firstName||'?')[0]+(a.lastName||'?')[0]).toUpperCase();
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':null;
+    const rc=i===0?'rank-gold':i===1?'rank-silver':i===2?'rank-bronze':'rank-rest';
+    return `<div class="rank-row">
+      <div class="rank-pos ${rc}">${medal||i+1}</div>
+      <div style="width:28px;height:28px;border-radius:50%;background:${c.bg};color:${c.fg};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">${init}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.firstName} ${a.lastName}</div>
+        <div class="prog" style="margin-top:3px"><div class="prog-fill" style="width:${Math.round(a.best)}%"></div></div>
+      </div>
+      <div class="rank-score" style="font-size:20px">${a.best.toFixed(1)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── ADMIN ──
+async function loadAdminData(){
+  const {db}=window._fb;
+  const snap=await getDocs(query(collection(db,'users')));
+  const all=snap.docs.map(d=>({id:d.id,...d.data()}));
+  const pending=all.filter(u=>u.role==='pending_judge'||u.role==='pending_organizer');
+  renderPendingList(pending);
+  renderAllUsers(all);
+}
+
+function renderPendingList(list){
+  const el=document.getElementById('pendingList');
+  if(!list.length){el.innerHTML='<div class="empty"><i class="ti ti-check"></i><p>No pending approvals. 🎉</p></div>';return;}
+  el.innerHTML=list.map(u=>`
+    <div class="invite-row">
+      <div class="invite-info">
+        <div class="invite-name">${u.firstName} ${u.lastName}</div>
+        <div class="invite-email">${u.email} · Requested: ${u.role.replace('pending_','')}</div>
+      </div>
+      <div class="approval-btns">
+        <button class="btn btn-primary btn-sm" onclick="approveUser('${u.id}','${u.role}')"><i class="ti ti-check"></i></button>
+        <button class="btn btn-danger btn-sm" onclick="rejectUser('${u.id}')"><i class="ti ti-x"></i></button>
+      </div>
+    </div>`).join('');
+}
+
+function renderAllUsers(list){
+  const el=document.getElementById('allUsersList');
+  el.innerHTML=list.map(u=>`
+    <div class="invite-row">
+      <div class="invite-info">
+        <div class="invite-name">${u.firstName} ${u.lastName} <span style="font-size:11px;color:var(--h)">${u.handle||''}</span></div>
+        <div class="invite-email">${u.email}</div>
+      </div>
+      <span class="role-pip ${ROLE_COLORS[u.role]||'pip-fan'}">${u.role}</span>
+    </div>`).join('');
+}
+
+window.approveUser = async function(uid, pendingRole){
+  const {db}=window._fb;
+  const approvedRole=pendingRole.replace('pending_','');
+  await updateDoc(doc(db,'users',uid),{role:approvedRole});
+  toast(`User approved as ${approvedRole}!`);
+  loadAdminData();
+};
+
+window.rejectUser = async function(uid){
+  if(!confirm('Reject and delete this user account?'))return;
+  const {db}=window._fb;
+  await deleteDoc(doc(db,'users',uid));
+  toast('User rejected');
+  loadAdminData();
+};
+
+window.sendInvite = async function(){
+  const email=document.getElementById('inv-email').value.trim();
+  const role=document.getElementById('inv-role').value;
+  if(!email){toast('Enter an email');return;}
+  const {db}=window._fb;
+  const inviteId='inv_'+Date.now();
+  await setDoc(doc(db,'invites',inviteId),{email,role,createdBy:window._user.uid,createdAt:serverTimestamp(),used:false});
+  const link=`${location.origin}${location.pathname}?invite=${inviteId}`;
+  document.getElementById('inviteResult').innerHTML=`<div style="background:var(--bg3);border-radius:8px;padding:10px 12px;font-size:12px;word-break:break-all;color:var(--m)">Invite link (share this):<br><strong style="color:var(--t)">${link}</strong></div>`;
+  if(navigator.clipboard)navigator.clipboard.writeText(link).then(()=>toast('Invite link copied!'));
+};
+
+// ── AUTH FUNCTIONS ──
+window.switchAuthTab = function(tab){
+  document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.auth-form').forEach(f=>f.classList.remove('active'));
+  document.querySelector(`.auth-tab:${tab==='login'?'first':'last'}-child`).classList.add('active');
+  document.getElementById('form-'+tab).classList.add('active');
+  // role card toggle
+  document.querySelectorAll('.role-card').forEach(rc=>{
+    rc.addEventListener('click',()=>{
+      document.querySelectorAll('.role-card').forEach(r=>r.classList.remove('selected'));
+      rc.classList.add('selected');
+    });
+  });
+};
+
+window.doLogin = async function(){
+  const email=document.getElementById('l-email').value.trim();
+  const pass=document.getElementById('l-pass').value;
+  if(!email||!pass){toast('Fill in email and password');return;}
+  try{
+    await signInWithEmailAndPassword(window._fb.auth,email,pass);
+  } catch(e){
+    toast(e.code==='auth/wrong-password'||e.code==='auth/user-not-found'?'Incorrect email or password':'Error: '+e.message);
+  }
+};
+
+window.doSignup = async function(){
+  const fname=document.getElementById('s-fname').value.trim();
+  const lname=document.getElementById('s-lname').value.trim();
+  const handle=document.getElementById('s-handle').value.trim();
+  const email=document.getElementById('s-email').value.trim();
+  const pass=document.getElementById('s-pass').value;
+  const baseRole=document.querySelector('input[name="role"]:checked')?.value||'fan';
+  const city=document.getElementById('s-city').value.trim();
+  const discipline=document.getElementById('s-discipline').value;
+  if(!fname||!email||!pass){toast('Fill in name, email, and password');return;}
+  if(pass.length<6){toast('Password must be at least 6 characters');return;}
+  try{
+    const cred=await createUserWithEmailAndPassword(window._fb.auth,email,pass);
+    const finalRole=(baseRole==='judge'||baseRole==='organizer')?'pending_'+baseRole:baseRole;
+    await setDoc(doc(window._fb.db,'users',cred.user.uid),{
+      firstName:fname,lastName:lname,handle,email,
+      role:finalRole,city,discipline:discipline||null,
+      createdAt:serverTimestamp()
+    });
+    // if athlete, also create athlete profile
+    if(finalRole==='athlete'){
+      window._athletes.push({id:cred.user.uid,firstName:fname,lastName:lname,handle,discipline,city,eventId:null});
+    }
+  } catch(e){
+    toast(e.code==='auth/email-already-in-use'?'Email already registered':'Error: '+e.message);
+  }
+};
+
+window.doSignOut = async function(){
+  if(window._unsubFeed)window._unsubFeed();
+  await signOut(window._fb.auth);
+  window._user=null; window._profile=null;
+  showScreen('authScreen');
+};
+
+// ── TABS ──
+window.switchTab = function(id, btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  else{const nb=document.querySelector(`.nav-btn[onclick*="'${id}'"]`);if(nb)nb.classList.add('active');}
+  if(id==='live')renderLiveDashboard();
+  if(id==='rankings')renderRankings();
+  if(id==='admin')loadAdminData();
+  if(id==='profile')updateRankStats();
+  location.hash=id;
+};
+
+// ── INSTALL ──
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();window._deferredPrompt=e;
+  document.getElementById('installBtn')&&(document.getElementById('installBtn').style.display='');
+});
+window.addEventListener('appinstalled',()=>{toast('Quilla Hub installed! 🤙');});
+
+window.showInstallSheet = function(){
+  const modal=document.getElementById('installModal');
+  modal.classList.add('open');
+  if(isIOS){document.getElementById('mi-ios').style.display='block';document.getElementById('mi-android').style.display='none';}
+  else{document.getElementById('mi-android').style.display='block';document.getElementById('mi-ios').style.display='none';}
+};
+window.doInstall = async function(){
+  if(!window._deferredPrompt)return;
+  window._deferredPrompt.prompt();await window._deferredPrompt.userChoice;
+  window._deferredPrompt=null;closeModal('installModal');
+};
+window.closeModal = function(id,e){
+  if(!e||e.target===document.getElementById(id)) document.getElementById(id).classList.remove('open');
+};
+window.showComposeModal = function(){toast('Write in the compose box above!');};
+
+// ── HELPERS ──
+window.autoResize = function(el){el.style.height='auto';el.style.height=el.scrollHeight+'px';}
+function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+function timeAgo(d){
+  const s=Math.floor((new Date()-d)/1000);
+  if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+'m ago';
+  if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';
+}
+
+// ── CHECK INVITE PARAM ──
+const urlParams = new URLSearchParams(location.search);
+const inviteId = urlParams.get('invite');
+if(inviteId){localStorage.setItem('qh_invite',inviteId);}
+
+// ── INIT ──
+const storedCfg = getStoredConfig();
+if(storedCfg && storedCfg.apiKey){
+  initFirebase(storedCfg);
+} else {
+  showScreen('loaderScreen');
+  setTimeout(()=>{
+    document.getElementById('loaderScreen').classList.remove('active');
+    document.getElementById('configScreen').classList.add('show');
+  },800);
+}
+
+// Service Worker
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body>
+</html>
